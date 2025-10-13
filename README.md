@@ -32,3 +32,11 @@ GitHubからGitlabへの移行方法はQiitaに載ってる
 Gitは一つの機能を追加するとき、ブランチを切る
 コードの保守がしやすいようなコード設計にする
 コードの要件定義のやり方を覚えたほうが良い
+
+### 気になるキーワード
+ - Weights and biases
+ - MLOps 勉強会
+ - DVC
+ - CT/CD
+ - LakeFS
+ 
