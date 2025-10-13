@@ -28,6 +28,5 @@ def test_trainval_run_epoch():
 
     runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs=1)
 
-    # train_val と test を呼んでエラーが出ないことを確認
     runner.train_val()
     runner.test()
