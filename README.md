@@ -41,5 +41,3 @@ Gitは一つの機能を追加するとき、ブランチを切る
  - LakeFS
  - TensorBoard
  - wandb
- - logging
- - if __name__ == "__main__":

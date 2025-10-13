@@ -2,6 +2,7 @@ import torch.nn as nn
 
 import torch.nn as nn
 
+
 class CNN(nn.Module):
     def __init__(self):
         super().__init__()
@@ -20,6 +21,7 @@ class CNN(nn.Module):
             nn.ReLU(),
             nn.Linear(512, 1)
         )
+
 
     def forward(self, x):
         x = self.features(x)

@@ -5,11 +5,13 @@ import torch
 from torch.utils.data import Dataset
 from dataclasses import dataclass
 
+
 @dataclass
 class PorousDataset(Dataset):
     X_dir: str
     y_path: str
     nums_data: int
+
 
     def __post_init__(self):
         files = glob.glob(os.path.join(self.X_dir, "*.pt"))
@@ -17,10 +19,12 @@ class PorousDataset(Dataset):
 
         self.y = torch.load(self.y_path)[:self.nums_data]
 
+
     def __len__(self):
         return len(self.X_files)
     
+    
     def __getitem__(self, idx):
-        X = torch.load(self.X_files[idx])
+        x = torch.load(self.X_files[idx])
         y = self.y[idx]
-        return X, y
+        return x, y

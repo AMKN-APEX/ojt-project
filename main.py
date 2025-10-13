@@ -31,9 +31,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNN()
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-num_epochs = 3
 
-runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs)
+runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs=3)
 runner.train_val()
 runner.test()
 

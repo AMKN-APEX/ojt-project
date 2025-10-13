@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch import nn, optim
 
+
 @dataclass
 class TrainValTest:
     train_loader: DataLoader
@@ -15,9 +16,11 @@ class TrainValTest:
     device: torch.device
     num_epochs: int = 20
 
+
     def __post_init__(self):
         self.model.to(self.device)
         print(self.device)
+
 
     def run_epoch(self, loader: DataLoader, train: bool = True) -> float:
         loss_total = 0.0
@@ -35,11 +38,13 @@ class TrainValTest:
                 loss_total += loss.item() * x.size(0)
         return loss_total / len(loader.dataset)  # type: ignore
 
+
     def train_val(self):
         for epoch in range(self.num_epochs):
             train_loss = self.run_epoch(self.train_loader, train=True)
             val_loss = self.run_epoch(self.val_loader, train=False)
             print(f"Epoch {epoch+1}/{self.num_epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
+
 
     def test(self):
         test_loss = self.run_epoch(self.test_loader, train=False)
