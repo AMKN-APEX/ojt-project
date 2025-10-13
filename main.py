@@ -11,7 +11,9 @@ DATA_DIR = "/mnt/c/Users/onion/Documents/slice_data_x_y_z_1"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
 VAL_DIR = os.path.join(DATA_DIR, "val")
 TEST_DIR = os.path.join(DATA_DIR, "test")
-Y_PATH = os.path.join(DATA_DIR, "target/m_train.pt")
+TRAIN_Y_PATH = os.path.join(DATA_DIR, "target/m_train.pt")
+VAL_Y_PATH = os.path.join(DATA_DIR, "target/m_val.pt")
+TEST_Y_PATH = os.path.join(DATA_DIR, "target/m_test.pt")
 
 class PorousDataset(Dataset):
     def __init__(self, X_dir, y_path, nums_data):
@@ -27,14 +29,14 @@ class PorousDataset(Dataset):
         y = self.y[idx]
         return X, y
 
-train_dataset = PorousDataset(TRAIN_DIR, Y_PATH, nums_data=1000)
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
+train_dataset = PorousDataset(TRAIN_DIR, TRAIN_Y_PATH, nums_data=1000)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 
-val_dataset = PorousDataset(VAL_DIR, Y_PATH, nums_data=1000)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=True, num_workers=0)
+val_dataset = PorousDataset(VAL_DIR, VAL_Y_PATH, nums_data=1000)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 
-test_dataset = PorousDataset(TEST_DIR, Y_PATH, nums_data=1000)
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True, num_workers=0)
+test_dataset = PorousDataset(TEST_DIR, TEST_Y_PATH, nums_data=1000)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
 # --- Model ---
 class CNN(nn.Module):
@@ -126,6 +128,4 @@ with torch.no_grad():
 test_loss /= len(test_dataset)
 
 print(f"Test Loss: {test_loss:.4f}")
-
-# --- Visualization ---
 
