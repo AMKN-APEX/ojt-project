@@ -6,7 +6,7 @@ import torch.optim as optim
 
 from src.dataset import PorousDataset
 from src.model import CNN
-from src.train_val_test import train_val, test
+from src.train_val_test import TrainValTest
 
 # --- DataLoader ---
 DATA_DIR = "/mnt/c/Users/onion/Documents/slice_data_x_y_z_1"
@@ -26,18 +26,14 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4
 test_dataset = PorousDataset(TEST_DIR, TEST_Y_PATH, nums_data=1000)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
-# --- Training and Validation ---
+# --- Training and Validation and Test---
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 model = CNN().to(device)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
 num_epochs = 3
 
-train_val(model, train_loader, val_loader, train_dataset, val_dataset, device, criterion, optimizer, num_epochs)
-
-# --- Test ---
-
-test(model, test_loader, test_dataset, device, criterion)
+tvt = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs)
+tvt.train_val()
+tvt.test()
 

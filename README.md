@@ -39,4 +39,5 @@ Gitは一つの機能を追加するとき、ブランチを切る
  - DVC
  - CT/CD
  - LakeFS
- 
+ - TensorBoard
+ - wandb
