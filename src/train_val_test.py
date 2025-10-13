@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torch import nn, optim
 
 @dataclass
-class TrainValTest():
+class TrainValTest:
     train_loader: DataLoader
     val_loader: DataLoader
     test_loader: DataLoader
@@ -19,7 +19,7 @@ class TrainValTest():
         self.model.to(self.device)
         print(self.device)
 
-    def run_epoch(self, loader, train=True):
+    def run_epoch(self, loader: DataLoader, train: bool = True) -> float:
         loss_total = 0.0
         self.model.train() if train else self.model.eval()
         with torch.set_grad_enabled(train):
@@ -33,7 +33,7 @@ class TrainValTest():
                     loss.backward()
                     self.optimizer.step()
                 loss_total += loss.item() * x.size(0)
-        return loss_total / len(loader.dataset)
+        return loss_total / len(loader.dataset)  # type: ignore
 
     def train_val(self):
         for epoch in range(self.num_epochs):
