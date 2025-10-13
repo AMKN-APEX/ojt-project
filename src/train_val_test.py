@@ -21,7 +21,7 @@ class TrainValTest:
 
     def run_epoch(self, loader: DataLoader, train: bool = True) -> float:
         loss_total = 0.0
-        self.model.train() if train else self.model.eval()
+        self.model.train(train)
         with torch.set_grad_enabled(train):
             for x, y in loader:
                 x = x.to(self.device, dtype=torch.float32)
