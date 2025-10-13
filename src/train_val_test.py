@@ -1,15 +1,23 @@
 import torch
+from dataclasses import dataclass
+import torch
+from torch.utils.data import DataLoader
+from torch import nn, optim
 
+@dataclass
 class TrainValTest():
-    def __init__(self, train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs):
-        self.train_loader = train_loader
-        self.val_loader = val_loader
-        self.test_loader = test_loader
-        self.model = model
-        self.criterion = criterion
-        self.optimizer = optimizer
-        self.device = device
-        self.num_epochs = num_epochs
+    train_loader: DataLoader
+    val_loader: DataLoader
+    test_loader: DataLoader
+    model: nn.Module
+    criterion: nn.Module
+    optimizer: optim.Optimizer
+    device: torch.device
+    num_epochs: int = 20
+
+    def __post_init__(self):
+        self.model.to(self.device)
+        print(self.device)
 
     def run_epoch(self, loader, train=True):
         loss_total = 0.0
