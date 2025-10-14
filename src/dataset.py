@@ -24,8 +24,8 @@ class PorousDataset(Dataset):
 
     def __len__(self):
         return len(self.X_files)
-    
-    
+
+
     def __getitem__(self, idx):
         x = torch.load(self.X_files[idx])
         m = self.m[idx]
