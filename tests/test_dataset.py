@@ -22,11 +22,13 @@ def test_porousdataset_basic(tmp_path):
 
     # y ファイルを作成（X_dir の外に置く）
     y = torch.arange(10, dtype=torch.float32)
-    y_path = tmp_path / "m_train.pt"
-    _make_pt(str(y_path), y)
+    y1_path = tmp_path / "m_train.pt"
+    y2_path = tmp_path / "kappa_train.pt"
+    _make_pt(str(y1_path), y)
+    _make_pt(str(y2_path), y*10)
 
     # データセットを初期化
-    ds = PorousDataset(str(data_dir), str(y_path), nums_data=10)
+    ds = PorousDataset(str(data_dir), str(y1_path), str(y2_path), nums_data=10)
 
     # 長さとファイル順をチェック
     assert len(ds) == 10
@@ -36,7 +38,10 @@ def test_porousdataset_basic(tmp_path):
     # __getitem__ の戻り値の型を確認
     x0, y0 = ds[0]
     assert isinstance(x0, torch.Tensor)
-    assert isinstance(y0, torch.Tensor)
+    assert isinstance(y0, list)
+    assert len(y0) == 2
+    assert isinstance(y0[0], torch.Tensor)
+    assert isinstance(y0[1], torch.Tensor)
 
 
 def test_porousdataset_truncate(tmp_path):
@@ -51,11 +56,13 @@ def test_porousdataset_truncate(tmp_path):
 
     # y ファイル（X_dir の外に置く）
     y = torch.arange(5, dtype=torch.float32)
-    y_path = tmp_path / "m_train.pt"
-    _make_pt(str(y_path), y)
+    y1_path = tmp_path / "m_train.pt"
+    y2_path = tmp_path / "kappa_train.pt"
+    _make_pt(str(y1_path), y)
+    _make_pt(str(y2_path), y*10)
 
     # nums_data=3 により 3 サンプルに制限されるはず
-    ds = PorousDataset(str(data_dir), str(y_path), nums_data=3)
+    ds = PorousDataset(str(data_dir), str(y1_path), str(y2_path), nums_data=3)
     assert len(ds) == 3
     basenames = [os.path.basename(p) for p in ds.X_files]
     assert basenames == ["structure_1.pt", "structure_2.pt", "structure_3.pt"]

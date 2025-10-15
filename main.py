@@ -13,17 +13,20 @@ DATA_DIR = "/mnt/c/Users/onion/Documents/slice_data_x_y_z_1"
 TRAIN_DIR = os.path.join(DATA_DIR, "train")
 VAL_DIR = os.path.join(DATA_DIR, "val")
 TEST_DIR = os.path.join(DATA_DIR, "test")
-TRAIN_Y_PATH = os.path.join(DATA_DIR, "target/m_train.pt")
-VAL_Y_PATH = os.path.join(DATA_DIR, "target/m_val.pt")
-TEST_Y_PATH = os.path.join(DATA_DIR, "target/m_test.pt")
+TRAIN_M_PATH = os.path.join(DATA_DIR, "target/m_train.pt")
+VAL_M_PATH = os.path.join(DATA_DIR, "target/m_val.pt")
+TEST_M_PATH = os.path.join(DATA_DIR, "target/m_test.pt")
+TRAIN_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_train.pt")
+VAL_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_val.pt")
+TEST_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_test.pt")
 
-train_dataset = PorousDataset(TRAIN_DIR, TRAIN_Y_PATH, nums_data=1000)
+train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, nums_data=1000)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 
-val_dataset = PorousDataset(VAL_DIR, VAL_Y_PATH, nums_data=1000)
+val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, nums_data=1000)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 
-test_dataset = PorousDataset(TEST_DIR, TEST_Y_PATH, nums_data=1000)
+test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, nums_data=1000)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
 # --- Training and Validation and Test---
