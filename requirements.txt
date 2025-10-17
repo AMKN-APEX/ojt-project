@@ -6,3 +6,5 @@ ipykernel
 pytest
 matplotlib
 seaborn
+mlflow
+pandas

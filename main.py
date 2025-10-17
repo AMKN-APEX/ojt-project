@@ -20,6 +20,11 @@ TRAIN_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_train.pt")
 VAL_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_val.pt")
 TEST_KAPPA_PATH = os.path.join(DATA_DIR, "target/kappa_test.pt")
 
+# 総データ数
+NUM_TRAIN = 63000
+NUM_VAL = 13500
+NUM_TEST = 13500
+
 train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, nums_data=1000)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 
