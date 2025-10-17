@@ -3,10 +3,18 @@ import torch
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
+import mlflow
 
 from src.dataset import PorousDataset
 from src.model import CNN
 from src.train_val_test import TrainValTest
+
+# --- mlflow ---
+DB_PATH = "/mnt/c/Users/onion/Documents/db/mlruns.db"
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+tracking_uri = f"sqlite:///{DB_PATH}"
+mlflow.set_tracking_uri(tracking_uri)
+mlflow.set_experiment("CNN_experiment")
 
 # --- DataLoader ---
 DATA_DIR = "/mnt/c/Users/onion/Documents/slice_data_x_y_z_1"
