@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
 import mlflow
+import mlflow.pytorch
 
 from src.dataset import PorousDataset
 from src.model import CNN
@@ -12,6 +13,7 @@ from src.train_val_test import TrainValTest
 # --- mlflow ---
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("test_experiment")
+print(mlflow.get_tracking_uri())
 
 with mlflow.start_run(run_name="CNN"):
     # --- DataLoader ---
@@ -66,3 +68,5 @@ with mlflow.start_run(run_name="CNN"):
     mlflow.log_param("model_type", model.__class__.__name__)
     mlflow.log_param("criterion", criterion.__class__.__name__)
     mlflow.log_param("optimizer", optimizer.__class__.__name__)
+
+    mlflow.pytorch.log_model(model, "model") # type: ignore
