@@ -8,7 +8,7 @@ services:
 
   db-server:
     image: postgres:13.3
-    container_name: db-server
+    container_name: ${DB_HOST}
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
