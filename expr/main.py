@@ -7,7 +7,7 @@ import torch.optim as optim
 import mlflow
 import mlflow.pytorch
 import hydra
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 # 親ディレクトリをパスに追加
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -17,6 +17,7 @@ from src.model import get_model
 from src.train_val_test import TrainValTest
 from src.optimizer import get_optimizer
 from src.criterion import get_criterion
+from src.utils import log_config_to_mlflow
 
 
 @hydra.main(config_name="config", version_base=None, config_path="conf")
@@ -80,19 +81,7 @@ def main(cfg: DictConfig) -> None:
         runner.test()
 
         # --- mlflow logging ---
-        mlflow.log_param("data_directory", DATA_DIR)
-        mlflow.log_param("num_train", num_train)
-        mlflow.log_param("num_val", num_val)
-        mlflow.log_param("num_test", num_test)
-        mlflow.log_param("batch_size", batch_size)
-        mlflow.log_param("num_workers", num_workers)
-        mlflow.log_param("learning_rate", learning_rate)
-        mlflow.log_param("num_epochs", num_epochs)
-        mlflow.log_param("device", device)
-        mlflow.log_param("model_type", model_name)
-        mlflow.log_param("criterion", criterion_name)
-        mlflow.log_param("optimizer", optimizer_name)
-
+        log_config_to_mlflow(cfg)
         # mlflow.pytorch.log_model(model, name="model") # type: ignore
 
 if __name__ == "__main__":
