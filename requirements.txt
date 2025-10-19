@@ -12,3 +12,5 @@ omegaconf
 argparse
 hydra-core
 timm
+tqdm
+torchinfo
