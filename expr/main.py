@@ -16,7 +16,9 @@ from src.train_val_test import TrainValTest
 from src.utils import cli_override
 
 # --- Load config ---
-cfg = cli_override("config.yaml")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+cfg_path = os.path.join(BASE_DIR, "config.yaml")
+cfg = cli_override(cfg_path)
 
 # --- mlflow ---
 mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)

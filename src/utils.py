@@ -1,12 +1,8 @@
-import os
 import argparse
 from omegaconf import OmegaConf
 
-def cli_override(cfg_name="config.yaml"):
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    cfg_path = os.path.join(BASE_DIR, cfg_name)
+def cli_override(cfg_path: str):
     cfg = OmegaConf.load(cfg_path)
-
     args = _create_arg_parser()
 
     # CLI で指定された値だけ上書き
@@ -32,7 +28,7 @@ def _create_arg_parser():
     return args
 
 # ドットキーをネスト dict に変換してマージ
-def _dict_from_dotkeys(dotdict):
+def _dict_from_dotkeys(dotdict: dict) -> dict:
     result = {}
     for k, v in dotdict.items():
         keys = k.split(".")
