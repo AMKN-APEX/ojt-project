@@ -10,3 +10,4 @@ mlflow
 pandas
 omegaconf
 argparse
+hydra-core
