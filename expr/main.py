@@ -19,31 +19,42 @@ from src.train_val_test import TrainValTest
 
 @hydra.main(config_name="config", version_base=None, config_path="conf")
 def main(cfg: DictConfig) -> None:
+    # --- parameters ---
+    # data.directory
+    DATA_DIR = cfg.data.directory.DATA_DIR
+    TRAIN_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[1])
+    VAL_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[2])
+    TEST_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[3])
+    TRAIN_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[0])
+    VAL_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[1])
+    TEST_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[2])
+    TRAIN_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[0])
+    VAL_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[1])
+    TEST_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[2])
+
+    # data.data_loader
+    num_train = cfg.data.data_loader.num_train
+    num_val = cfg.data.data_loader.num_val
+    num_test = cfg.data.data_loader.num_test
+    batch_size = cfg.data.data_loader.batch_size
+    num_workers = cfg.data.data_loader.num_workers
+    
+    # train
+    learning_rate = cfg.train.learning_rate
+    num_epochs = cfg.train.num_epochs
+
+    # mlflow
+    tracking_uri = cfg.mlflow.tracking_uri
+    experiment_name = cfg.mlflow.experiment_name
+    run_name = cfg.mlflow.run_name
 
     # --- mlflow ---
-    mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
-    mlflow.set_experiment(cfg.mlflow.experiment_name)
+    mlflow.set_tracking_uri(tracking_uri)
+    mlflow.set_experiment(experiment_name)
     print("MLflow Tracking URI:", mlflow.get_tracking_uri())
 
-    with mlflow.start_run(run_name=cfg.mlflow.run_name):
+    with mlflow.start_run(run_name=run_name):
         # --- DataLoader ---
-        DATA_DIR = cfg.data.directory.DATA_DIR
-        TRAIN_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[1])
-        VAL_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[2])
-        TEST_DIR = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[3])
-        TRAIN_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[0])
-        VAL_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[1])
-        TEST_M_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.M_NAMES[2])
-        TRAIN_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[0])
-        VAL_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[1])
-        TEST_KAPPA_PATH = os.path.join(DATA_DIR, cfg.data.directory.SUB_DATA_DIRS[0], cfg.data.directory.KAPPA_NAMES[2])
-
-        num_train = cfg.data.data_loader.num_train
-        num_val = cfg.data.data_loader.num_val
-        num_test = cfg.data.data_loader.num_test
-        batch_size = cfg.data.data_loader.batch_size
-        num_workers = cfg.data.data_loader.num_workers
-
         train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, nums_data=num_train)
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
@@ -54,9 +65,6 @@ def main(cfg: DictConfig) -> None:
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
         # --- Training and Validation and Test---
-        learning_rate = cfg.train.learning_rate
-        num_epochs = cfg.train.num_epochs
-
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = CNN()
         criterion = nn.MSELoss()
