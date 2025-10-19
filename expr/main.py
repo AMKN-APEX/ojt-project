@@ -2,18 +2,16 @@ import os
 import sys
 import torch
 from torch.utils.data import DataLoader
-import torch.nn as nn
-import torch.optim as optim
 import mlflow
 import mlflow.pytorch
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
+from timm.models import create_model
 
 # 親ディレクトリをパスに追加
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.dataset import PorousDataset
-from src.model import get_model
 from src.train_val_test import TrainValTest
 from src.optimizer import get_optimizer
 from src.criterion import get_criterion
@@ -42,8 +40,11 @@ def main(cfg: DictConfig) -> None:
     batch_size = cfg.data.data_loader.batch_size
     num_workers = cfg.data.data_loader.num_workers
     
+    # model
+    model_name = cfg.model.model_name
+    pretrained = cfg.model.pretrained
+
     # train
-    model_name = cfg.train.model_name
     criterion_name = cfg.train.criterion_name
     optimizer_name = cfg.train.optimizer_name
     learning_rate = cfg.train.learning_rate
@@ -72,7 +73,7 @@ def main(cfg: DictConfig) -> None:
 
         # --- Training and Validation and Test---
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = get_model(model_name)
+        model = create_model(model_name, pretrained)
         criterion = get_criterion(criterion_name)
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
 
