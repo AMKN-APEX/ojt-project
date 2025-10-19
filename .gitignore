@@ -5,3 +5,4 @@ __pycache__/
 db_server/
 ftp/
 outputs/
+mlruns/
