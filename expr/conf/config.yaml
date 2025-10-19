@@ -22,8 +22,11 @@ data:
     batch_size: 32
     num_workers: 4
 
-train:
-  model_name: cnn_256
+model:
+  model_name: resnet10t
+  pretrained: True
+
+train: 
   criterion_name: mse
   optimizer_name: adam
   learning_rate: 0.001
