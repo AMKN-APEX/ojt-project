@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import torch
 from torch.utils.data import DataLoader
 from torch import nn, optim
-
+import mlflow
 
 @dataclass
 class TrainValTest:
@@ -55,7 +55,17 @@ class TrainValTest:
             val_loss_m, val_loss_k = self.run_epoch(self.val_loader, train=False)
             print(f"Epoch {epoch+1}/{self.num_epochs}, Train Loss m: {train_loss_m:.4f}, Train Loss kappa: {train_loss_k:.4f}, Val Loss m: {val_loss_m:.4f}, Val Loss kappa: {val_loss_k:.4f}")
 
+            # --- MLflowにログ ---
+            mlflow.log_metric("train_loss_m", train_loss_m, step=epoch)
+            mlflow.log_metric("train_loss_k", train_loss_k, step=epoch)
+            mlflow.log_metric("val_loss_m", val_loss_m, step=epoch)
+            mlflow.log_metric("val_loss_k", val_loss_k, step=epoch)
+
 
     def test(self):
         test_loss_m, test_loss_k = self.run_epoch(self.test_loader, train=False)
         print(f"Test Loss m: {test_loss_m:.4f}, Test Loss kappa: {test_loss_k:.4f}")
+
+        # --- MLflowにログ ---
+        mlflow.log_metric("test_loss_m", test_loss_m)
+        mlflow.log_metric("test_loss_k", test_loss_k)
