@@ -13,8 +13,10 @@ from omegaconf import DictConfig
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.dataset import PorousDataset
-from src.model import CNN
+from src.model import get_model
 from src.train_val_test import TrainValTest
+from src.optimizer import get_optimizer
+from src.criterion import get_criterion
 
 
 @hydra.main(config_name="config", version_base=None, config_path="conf")
@@ -40,6 +42,9 @@ def main(cfg: DictConfig) -> None:
     num_workers = cfg.data.data_loader.num_workers
     
     # train
+    model_name = cfg.train.model_name
+    criterion_name = cfg.train.criterion_name
+    optimizer_name = cfg.train.optimizer_name
     learning_rate = cfg.train.learning_rate
     num_epochs = cfg.train.num_epochs
 
@@ -55,22 +60,22 @@ def main(cfg: DictConfig) -> None:
 
     with mlflow.start_run(run_name=run_name):
         # --- DataLoader ---
-        train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, nums_data=num_train)
+        train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, num_train)
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
-        val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, nums_data=num_val)
+        val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, num_val)
         val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-        test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, nums_data=num_test)
+        test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, num_test)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
         # --- Training and Validation and Test---
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = CNN()
-        criterion = nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+        model = get_model(model_name)
+        criterion = get_criterion(criterion_name)
+        optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
 
-        runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs=num_epochs)
+        runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs)
         runner.train_val()
         runner.test()
 
@@ -84,9 +89,9 @@ def main(cfg: DictConfig) -> None:
         mlflow.log_param("learning_rate", learning_rate)
         mlflow.log_param("num_epochs", num_epochs)
         mlflow.log_param("device", device)
-        mlflow.log_param("model_type", model.__class__.__name__)
-        mlflow.log_param("criterion", criterion.__class__.__name__)
-        mlflow.log_param("optimizer", optimizer.__class__.__name__)
+        mlflow.log_param("model_type", model_name)
+        mlflow.log_param("criterion", criterion_name)
+        mlflow.log_param("optimizer", optimizer_name)
 
         # mlflow.pytorch.log_model(model, name="model") # type: ignore
 
