@@ -9,3 +9,4 @@ seaborn
 mlflow
 pandas
 omegaconf
+argparse
