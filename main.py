@@ -13,7 +13,7 @@ from src.train_val_test import TrainValTest
 # --- mlflow ---
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("test_experiment")
-print(mlflow.get_tracking_uri())
+print("MLflow Tracking URI:", mlflow.get_tracking_uri())
 
 with mlflow.start_run(run_name="CNN"):
     # --- DataLoader ---
@@ -69,4 +69,4 @@ with mlflow.start_run(run_name="CNN"):
     mlflow.log_param("criterion", criterion.__class__.__name__)
     mlflow.log_param("optimizer", optimizer.__class__.__name__)
 
-    mlflow.pytorch.log_model(model, "model") # type: ignore
+    # mlflow.pytorch.log_model(model, name="model") # type: ignore
