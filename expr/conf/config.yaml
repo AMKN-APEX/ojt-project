@@ -1,0 +1,35 @@
+data:
+  directory:
+    DATA_DIR: /mnt/c/Users/onion/Documents/slice_data_x_y_z_1
+    SUB_DATA_DIRS: 
+      - target
+      - train
+      - val
+      - test
+    M_NAMES:
+      - m_train.pt
+      - m_val.pt
+      - m_test.pt
+    KAPPA_NAMES:
+      - kappa_train.pt
+      - kappa_val.pt
+      - kappa_test.pt
+  
+  data_loader:
+    num_train: 1000 # max 63000
+    num_val: 1000 # max 13500
+    num_test: 1000 # max 13500
+    batch_size: 32
+    num_workers: 4
+
+train:
+  learning_rate: 0.001
+  num_epochs: 3
+
+mlflow:
+  experiment_name: test_experiment
+  run_name: CNN
+  tracking_uri: http://localhost:5000
+  
+
+  

@@ -8,3 +8,6 @@ matplotlib
 seaborn
 mlflow
 pandas
+omegaconf
+argparse
+hydra-core
