@@ -73,7 +73,7 @@ def main(cfg: DictConfig) -> None:
 
         # --- Training and Validation and Test---
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = create_model(model_name, pretrained)
+        model = create_model(model_name=model_name, pretrained=pretrained)
         criterion = get_criterion(criterion_name)
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
 
