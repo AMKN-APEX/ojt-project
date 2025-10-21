@@ -39,6 +39,10 @@ def main(cfg: DictConfig) -> None:
     num_test = cfg.data.data_loader.num_test
     batch_size = cfg.data.data_loader.batch_size
     num_workers = cfg.data.data_loader.num_workers
+
+    # data
+    m_scaler_name = cfg.data.normalizer.m_scaler_name
+    kappa_scaler_name = cfg.data.normalizer.kappa_scaler_name
     
     # model
     model_name = cfg.model.model_name
@@ -62,13 +66,13 @@ def main(cfg: DictConfig) -> None:
 
     with mlflow.start_run(run_name=run_name):
         # --- DataLoader ---
-        train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, num_train)
+        train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, num_train, m_scaler_name, kappa_scaler_name)
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
-        val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, num_val)
+        val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, num_val, m_scaler_name, kappa_scaler_name)
         val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-        test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, num_test)
+        test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, num_test, m_scaler_name, kappa_scaler_name)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
         # --- Training and Validation and Test---

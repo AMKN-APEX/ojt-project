@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 def get_criterion(criterion_name: str):
     criterion_name = criterion_name.lower()
     if criterion_name == "mse":

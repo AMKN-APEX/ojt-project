@@ -21,6 +21,10 @@ data:
     num_test: 1000 # max 13500
     batch_size: 32
     num_workers: 4
+  
+  normalizer:
+    m_scaler_name: minmax
+    kappa_scaler_name: log_zscore
 
 model:
   model_name: resnet10t
