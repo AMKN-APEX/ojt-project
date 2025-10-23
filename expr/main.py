@@ -55,6 +55,7 @@ def main(cfg: DictConfig) -> None:
     optimizer_name = cfg.train.optimizer_name
     learning_rate = cfg.train.learning_rate
     num_epochs = cfg.train.num_epochs
+    metrics_name = cfg.train.metrics_name
 
     # train.scheduler
     scheduler_name = cfg.train.scheduler.name
@@ -72,14 +73,53 @@ def main(cfg: DictConfig) -> None:
 
     with mlflow.start_run(run_name=run_name):
         # --- DataLoader ---
-        train_dataset = PorousDataset(TRAIN_DIR, TRAIN_M_PATH, TRAIN_KAPPA_PATH, num_train, m_scaler_name, kappa_scaler_name)
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=pin_memory)
+        train_dataset = PorousDataset(
+            X_dir=TRAIN_DIR,
+            m_path=TRAIN_M_PATH,
+            kappa_path=TRAIN_KAPPA_PATH,
+            nums_data=num_train,
+            m_scaler_name=m_scaler_name,
+            kappa_scaler_name=kappa_scaler_name
+        )
+        train_loader = DataLoader(
+            train_dataset, 
+            batch_size=batch_size, 
+            shuffle=True, 
+            num_workers=num_workers, 
+            pin_memory=pin_memory
+        )
 
-        val_dataset = PorousDataset(VAL_DIR, VAL_M_PATH, VAL_KAPPA_PATH, num_val, m_scaler_name, kappa_scaler_name)
-        val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=pin_memory)
+        val_dataset = PorousDataset(
+            X_dir=VAL_DIR, 
+            m_path=VAL_M_PATH, 
+            kappa_path=VAL_KAPPA_PATH, 
+            nums_data=num_val, 
+            m_scaler_name=m_scaler_name, 
+            kappa_scaler_name=kappa_scaler_name
+        )
+        val_loader = DataLoader(
+            val_dataset, 
+            batch_size=batch_size, 
+            shuffle=False, 
+            num_workers=num_workers, 
+            pin_memory=pin_memory
+        )
 
-        test_dataset = PorousDataset(TEST_DIR, TEST_M_PATH, TEST_KAPPA_PATH, num_test, m_scaler_name, kappa_scaler_name)
-        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=pin_memory)
+        test_dataset = PorousDataset(
+            X_dir=TEST_DIR, 
+            m_path=TEST_M_PATH, 
+            kappa_path=TEST_KAPPA_PATH, 
+            nums_data=num_test, 
+            m_scaler_name=m_scaler_name, 
+            kappa_scaler_name=kappa_scaler_name
+        )
+        test_loader = DataLoader(
+            test_dataset, 
+            batch_size=batch_size, 
+            shuffle=False, 
+            num_workers=num_workers, 
+            pin_memory=pin_memory
+        )
 
         # --- Training and Validation and Test---
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -88,7 +128,18 @@ def main(cfg: DictConfig) -> None:
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
         scheduler = get_scheduler(scheduler_name, optimizer, scheduler_params)
 
-        runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs, scheduler)
+        runner = TrainValTest(
+            train_loader=train_loader,
+            val_loader=val_loader,
+            test_loader=test_loader,
+            model=model,
+            criterion=criterion,
+            optimizer=optimizer,
+            device=device,
+            metrics_name=metrics_name,
+            num_epochs=num_epochs,
+            scheduler=scheduler,
+        )
         runner.train_val()
         runner.test()
 

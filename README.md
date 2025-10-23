@@ -41,9 +41,7 @@ Gitは一つの機能を追加するとき、ブランチを切る
  - TensorBoard
  - wandb
  - tqdm
- - r2
- - amp
- - violinplot
+ - mとkappa片方だけ予測
 
 ### wsl2のIP固定について
 Windows Homeの制約により、Hyper-Vの仮想スイッチマネージャーが使えないため、wsl2とwindows PCのIP統一(固定)ができない。

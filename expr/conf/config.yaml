@@ -21,7 +21,7 @@ data:
     num_test: 1000 # max 13500
     batch_size: 32
     num_workers: 4
-    pin_memory: True
+    pin_memory: False
   
   normalizer:
     m_scaler_name: minmax
@@ -36,8 +36,9 @@ train:
   optimizer_name: adam
   learning_rate: 0.001
   num_epochs: 3
+  metrics_name: r2
   scheduler:
-    name: steplr
+    name: null
     params: {"step_size": 1, "gamma": 0.1}
 
 mlflow:
