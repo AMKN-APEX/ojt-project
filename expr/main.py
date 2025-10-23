@@ -15,6 +15,7 @@ from src.dataset import PorousDataset
 from src.train_val_test import TrainValTest
 from src.optimizer import get_optimizer
 from src.criterion import get_criterion
+from src.lr_scheduler import get_scheduler
 from src.utils import log_config_to_mlflow
 
 
@@ -51,6 +52,7 @@ def main(cfg: DictConfig) -> None:
     # train
     criterion_name = cfg.train.criterion_name
     optimizer_name = cfg.train.optimizer_name
+    scheduler_name = cfg.train.scheduler_name
     learning_rate = cfg.train.learning_rate
     num_epochs = cfg.train.num_epochs
 
@@ -80,8 +82,9 @@ def main(cfg: DictConfig) -> None:
         model = create_model(model_name=model_name, pretrained=pretrained)
         criterion = get_criterion(criterion_name)
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
+        scheduler = get_scheduler(scheduler_name, optimizer)
 
-        runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs)
+        runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs, scheduler)
         runner.train_val()
         runner.test()
 

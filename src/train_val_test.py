@@ -1,8 +1,9 @@
 import torch
 from dataclasses import dataclass
-import torch
+from typing import Optional, Any
 from torch.utils.data import DataLoader
 from torch import nn, optim
+from torch.optim import lr_scheduler
 import mlflow
 
 @dataclass
@@ -15,6 +16,7 @@ class TrainValTest:
     optimizer: optim.Optimizer
     device: torch.device
     num_epochs: int = 20
+    scheduler: Optional[Any] = None
 
 
     def __post_init__(self):
@@ -53,6 +55,10 @@ class TrainValTest:
         for epoch in range(self.num_epochs):
             train_loss_m, train_loss_k = self.run_epoch(self.train_loader, train=True)
             val_loss_m, val_loss_k = self.run_epoch(self.val_loader, train=False)
+
+            if self.scheduler is not None:
+                self.scheduler.step()
+                
             print(f"Epoch {epoch+1}/{self.num_epochs}, Train Loss m: {train_loss_m:.4f}, Train Loss kappa: {train_loss_k:.4f}, Val Loss m: {val_loss_m:.4f}, Val Loss kappa: {val_loss_k:.4f}")
 
             # MLflowにログ

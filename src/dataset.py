@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 from dataclasses import dataclass
 
-from .normalizer import Normalizer
+from .normalizer import apply_scaler
 
 @dataclass
 class PorousDataset(Dataset):
@@ -31,6 +31,6 @@ class PorousDataset(Dataset):
 
     def __getitem__(self, idx):
         x = torch.load(self.X_files[idx])
-        m_scaled = Normalizer(self.m_scaler_name, self.m[idx]).apply_scaler()
-        kappa_scaled = Normalizer(self.kappa_scaler_name, self.kappa[idx]).apply_scaler()
+        m_scaled = apply_scaler(self.m_scaler_name, self.m[idx])
+        kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa[idx])
         return x, [m_scaled, kappa_scaled]
