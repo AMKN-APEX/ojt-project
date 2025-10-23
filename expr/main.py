@@ -52,9 +52,10 @@ def main(cfg: DictConfig) -> None:
     # train
     criterion_name = cfg.train.criterion_name
     optimizer_name = cfg.train.optimizer_name
-    scheduler_name = cfg.train.scheduler_name
     learning_rate = cfg.train.learning_rate
     num_epochs = cfg.train.num_epochs
+    scheduler_name = cfg.train.scheduler.name
+    scheduler_params = cfg.train.scheduler.params
 
     # mlflow
     tracking_uri = cfg.mlflow.tracking_uri
@@ -82,7 +83,7 @@ def main(cfg: DictConfig) -> None:
         model = create_model(model_name=model_name, pretrained=pretrained)
         criterion = get_criterion(criterion_name)
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
-        scheduler = get_scheduler(scheduler_name, optimizer)
+        scheduler = get_scheduler(scheduler_name, optimizer, scheduler_params)
 
         runner = TrainValTest(train_loader, val_loader, test_loader, model, criterion, optimizer, device, num_epochs, scheduler)
         runner.train_val()
