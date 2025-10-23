@@ -53,6 +53,8 @@ class TrainValTest:
 
     def train_val(self):
         for epoch in range(self.num_epochs):
+            lr = self.optimizer.param_groups[0]['lr']
+
             train_loss_m, train_loss_k = self.run_epoch(self.train_loader, train=True)
             val_loss_m, val_loss_k = self.run_epoch(self.val_loader, train=False)
 
@@ -66,6 +68,7 @@ class TrainValTest:
             mlflow.log_metric("train_loss_k", train_loss_k, step=epoch)
             mlflow.log_metric("val_loss_m", val_loss_m, step=epoch)
             mlflow.log_metric("val_loss_k", val_loss_k, step=epoch)
+            mlflow.log_metric("lr", lr, step=epoch)
 
 
     def test(self):
