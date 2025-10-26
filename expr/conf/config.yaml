@@ -28,7 +28,7 @@ data:
     kappa_scaler_name: log_zscore
 
 model:
-  model_name: resnet34d
+  model_name: resnet10t
   pretrained: True
   num_classes: 2
 
@@ -44,7 +44,7 @@ train:
 
 mlflow:
   experiment_name: test_experiment
-  run_name: resnet34d
+  run_name: resnet10t
   tracking_uri: http://localhost:5000
   
 
