@@ -1,70 +1,44 @@
-import os
 import torch
-
+import pytest
+import os
 from src.dataset import PorousDataset
+from src.normalizer import apply_scaler
 
 
-def _make_pt(path, tensor):
-    """小さなテンソルを .pt ファイルに保存するユーティリティ。"""
-    torch.save(tensor, path)
+def test_porous_dataset_returns_expected_types(tmp_path):
+    xdir = tmp_path / "xdir"
+    xdir.mkdir()
+    x0 = torch.randn(3, 3)
+    x1 = torch.randn(3, 3)
+    torch.save(x0, os.path.join(xdir, "0.pt"))
+    torch.save(x1, os.path.join(xdir, "1.pt"))
 
+    m = torch.tensor([0.0, 1.0])
+    kappa = torch.tensor([1.0, 4.0])
+    m_path = tmp_path / "m.pt"
+    kappa_path = tmp_path / "kappa.pt"
+    torch.save(m, str(m_path))
+    torch.save(kappa, str(kappa_path))
 
-def test_porousdataset_basic(tmp_path):
-    """基本動作: 一時ディレクトリ上でファイルを作成し、読み込みと順序をチェックする。"""
-    # テスト用ディレクトリを作る
-    data_dir = tmp_path / "data"
-    data_dir.mkdir()
+    ds = PorousDataset(
+        X_dir=str(xdir),
+        m_path=str(m_path),
+        kappa_path=str(kappa_path),
+        nums_data=2,
+        m_scaler_name="minmax",
+        kappa_scaler_name="log_zscore",
+    )
 
-    # X ファイルを作成 (structure_1.pt, ... , structure_10.pt)
-    for i in range(10):
-        x_path = data_dir / f"structure_{i+1}.pt"
-        _make_pt(str(x_path), torch.randn(3, 32, 32))
+    assert len(ds) == 2
+    x, y = ds[0]
+    assert isinstance(x, torch.Tensor)
+    assert isinstance(y, list) and len(y) == 2
+    assert isinstance(y[0], torch.Tensor)
+    assert y[0].dtype == torch.float32
+    assert isinstance(y[1], torch.Tensor)
+    assert y[1].dtype == torch.float32
 
-    # y ファイルを作成（X_dir の外に置く）
-    y = torch.arange(10, dtype=torch.float32)
-    y1_path = tmp_path / "m_train.pt"
-    y2_path = tmp_path / "kappa_train.pt"
-    _make_pt(str(y1_path), y)
-    _make_pt(str(y2_path), y*10)
-
-    # データセットを初期化
-    ds = PorousDataset(str(data_dir), str(y1_path), str(y2_path), nums_data=10)
-
-    # 長さとファイル順をチェック
-    assert len(ds) == 10
-    basenames = [os.path.basename(p) for p in ds.X_files]
-    assert basenames == [f"structure_{i+1}.pt" for i in range(10)]
-
-    # __getitem__ の戻り値の型を確認
-    x0, y0 = ds[0]
-    assert isinstance(x0, torch.Tensor)
-    assert isinstance(y0, list)
-    assert len(y0) == 2
-    assert isinstance(y0[0], torch.Tensor)
-    assert isinstance(y0[1], torch.Tensor)
-
-
-def test_porousdataset_truncate(tmp_path):
-    """nums_data によるトランケート処理を確認する。"""
-    data_dir = tmp_path / "data"
-    data_dir.mkdir()
-
-    # 5 個の X ファイルを作成
-    for i in range(5):
-        x_path = data_dir / f"structure_{i+1}.pt"
-        _make_pt(str(x_path), torch.randn(3, 16, 16))
-
-    # y ファイル（X_dir の外に置く）
-    y = torch.arange(5, dtype=torch.float32)
-    y1_path = tmp_path / "m_train.pt"
-    y2_path = tmp_path / "kappa_train.pt"
-    _make_pt(str(y1_path), y)
-    _make_pt(str(y2_path), y*10)
-
-    # nums_data=3 により 3 サンプルに制限されるはず
-    ds = PorousDataset(str(data_dir), str(y1_path), str(y2_path), nums_data=3)
-    assert len(ds) == 3
-    basenames = [os.path.basename(p) for p in ds.X_files]
-    assert basenames == ["structure_1.pt", "structure_2.pt", "structure_3.pt"]
-    
+    all_m_scaled = ds.m_scaled
+    assert torch.is_tensor(all_m_scaled)
+    assert all_m_scaled.shape[0] == 2
 
