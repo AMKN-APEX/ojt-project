@@ -30,12 +30,15 @@ class TrainValTest:
     def run_epoch(self, loader: DataLoader, train: bool = True) -> tuple:
         loss1_total = 0.0
         loss2_total = 0.0
-        metric1_total = 0.0
-        metric2_total = 0.0
         num_samples = 0
 
         self.model.train(train)
         with torch.set_grad_enabled(train):
+            y1_list = []
+            y2_list = []
+            out1_list = []
+            out2_list = []
+
             for x, y in loader:
                 x = x.to(self.device, dtype=torch.float32)
                 y1 = y[0].to(self.device, dtype=torch.float32).view(-1, 1) # m
@@ -49,9 +52,6 @@ class TrainValTest:
                 loss2 = self.criterion(outputs2, y2)
                 loss = loss1 + loss2
 
-                metrics1 = get_metrics(self.metrics_name, y1, outputs1)
-                metrics2 = get_metrics(self.metrics_name, y2, outputs2)
-
                 if train:
                     self.optimizer.zero_grad()
                     loss.backward()
@@ -60,14 +60,23 @@ class TrainValTest:
                 batch_size = x.size(0)
                 loss1_total += loss1.item() * batch_size
                 loss2_total += loss2.item() * batch_size
-                metric1_total += metrics1 * batch_size
-                metric2_total += metrics2 * batch_size
+
+                y1_list.append(y1.detach().cpu())
+                y2_list.append(y2.detach().cpu())
+                out1_list.append(outputs1.detach().cpu())
+                out2_list.append(outputs2.detach().cpu())
                 num_samples += batch_size
 
         avg_loss1 = loss1_total / num_samples
         avg_loss2 = loss2_total / num_samples
-        avg_metric1 = metric1_total / num_samples
-        avg_metric2 = metric2_total / num_samples
+
+        y1_all = torch.cat(y1_list, dim=0)
+        out1_all = torch.cat(out1_list, dim=0)
+        y2_all = torch.cat(y2_list, dim=0)
+        out2_all = torch.cat(out2_list, dim=0)
+
+        avg_metric1 = get_metrics(self.metrics_name, y1_all, out1_all)
+        avg_metric2 = get_metrics(self.metrics_name, y2_all, out2_all)
 
         return avg_loss1, avg_loss2, avg_metric1, avg_metric2
 
