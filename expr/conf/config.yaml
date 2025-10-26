@@ -21,20 +21,30 @@ data:
     num_test: 1000 # max 13500
     batch_size: 32
     num_workers: 4
+    pin_memory: False
+  
+  normalizer:
+    m_scaler_name: minmax
+    kappa_scaler_name: log_zscore
 
 model:
-  model_name: resnet10t
+  model_name: resnet34d
   pretrained: True
+  num_classes: 2
 
 train: 
   criterion_name: mse
   optimizer_name: adam
   learning_rate: 0.001
   num_epochs: 3
+  metrics_name: r2
+  scheduler:
+    name: null
+    params: {"step_size": 1, "gamma": 0.1}
 
 mlflow:
   experiment_name: test_experiment
-  run_name: CNN
+  run_name: resnet34d
   tracking_uri: http://localhost:5000
   
 
