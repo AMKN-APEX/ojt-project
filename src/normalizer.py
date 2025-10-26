@@ -12,18 +12,16 @@ def apply_scaler(scaler_name: str, x: torch.Tensor):
     if scaler_name == "zscore":
         scaler = StandardScaler()
         x_scaled = scaler.fit_transform(x_np)
-        return x_scaled
     elif scaler_name == "minmax":
         scaler = MinMaxScaler()
         x_scaled = scaler.fit_transform(x_np)
-        return x_scaled
     elif scaler_name == "log":
         x_scaled = np.log(x_np)
-        return x_scaled
     elif scaler_name == "log_zscore":
         x_log = np.log(x_np)
         scaler = StandardScaler()
         x_scaled = scaler.fit_transform(x_log)
-        return x_scaled
     else:
         raise ValueError(f"Unsupported optimizer name: {scaler_name}")
+
+    return torch.from_numpy(x_scaled.astype(np.float32))

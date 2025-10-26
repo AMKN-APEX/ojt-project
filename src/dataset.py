@@ -24,6 +24,9 @@ class PorousDataset(Dataset):
         self.m = torch.load(self.m_path)[:self.nums_data]
         self.kappa = torch.load(self.kappa_path)[:self.nums_data]
 
+        self.m_scaled =apply_scaler(self.m_scaler_name, self.m)
+        self.kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa)
+
 
     def __len__(self):
         return len(self.X_files)
@@ -31,6 +34,6 @@ class PorousDataset(Dataset):
 
     def __getitem__(self, idx):
         x = torch.load(self.X_files[idx])
-        m_scaled = apply_scaler(self.m_scaler_name, self.m[idx])
-        kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa[idx])
+        m_scaled = self.m_scaled[idx]
+        kappa_scaled = self.kappa_scaled[idx]
         return x, [m_scaled, kappa_scaled]

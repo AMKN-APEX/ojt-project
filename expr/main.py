@@ -49,6 +49,7 @@ def main(cfg: DictConfig) -> None:
     # model
     model_name = cfg.model.model_name
     pretrained = cfg.model.pretrained
+    num_classes = cfg.model.num_classes
 
     # train
     criterion_name = cfg.train.criterion_name
@@ -123,7 +124,7 @@ def main(cfg: DictConfig) -> None:
 
         # --- Training and Validation and Test---
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = create_model(model_name=model_name, pretrained=pretrained)
+        model = create_model(model_name=model_name, pretrained=pretrained, num_classes=num_classes)
         criterion = get_criterion(criterion_name)
         optimizer = get_optimizer(optimizer_name, model.parameters(), learning_rate)
         scheduler = get_scheduler(scheduler_name, optimizer, scheduler_params)

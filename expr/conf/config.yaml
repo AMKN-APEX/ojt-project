@@ -30,6 +30,7 @@ data:
 model:
   model_name: resnet10t
   pretrained: True
+  num_classes: 2
 
 train: 
   criterion_name: mse
