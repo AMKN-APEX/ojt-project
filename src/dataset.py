@@ -30,9 +30,7 @@ class PorousDataset(Dataset):
 
         if self.train:
             self.m_scaled, self.m_scaler = apply_scaler(self.m_scaler_name, self.m, scaler=None)
-
             self.kappa_scaled, self.kappa_scaler = apply_scaler(self.kappa_scaler_name, self.kappa, scaler=None)
-        
         else:
             self.m_scaled = apply_scaler(self.m_scaler_name, self.m, scaler=self.m_scaler)
             self.kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa, scaler=self.kappa_scaler)
