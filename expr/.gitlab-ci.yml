@@ -1,0 +1,8 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "expr"
+
+experiment:
+  stage: experiment
+  script:
+    - python ./expr/main.py
