@@ -12,7 +12,6 @@ from src.optimizer import get_optimizer
 class DummyModel(nn.Module):
     def __init__(self):
         super().__init__()
-        # simple linear that outputs two values (m and kappa)
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(9, 2)
 
@@ -24,7 +23,6 @@ class DummyModel(nn.Module):
 def make_tmp_dataset(tmp_path):
     xdir = tmp_path / "xdir"
     xdir.mkdir()
-    # create 4 small tensors shaped (3,3)
     for i in range(4):
         t = torch.randn(3, 3)
         torch.save(t, os.path.join(xdir, f"{i}.pt"))
