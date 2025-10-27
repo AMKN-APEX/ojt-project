@@ -1,0 +1,20 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+stages:
+  - check
+  - preparation
+  - experiment
+
+include:
+  - local: tests/.gitlab-ci.yml
+  - local: expr/.gitlab-ci.yml
+
+before_scripts:
+  - echo $CI_COMMIT_BRANCH
+
+check_gpu:
+  stage: check
+  script: nvidia-smi
+    
