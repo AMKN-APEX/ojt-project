@@ -80,7 +80,8 @@ def main(cfg: DictConfig) -> None:
             kappa_path=TRAIN_KAPPA_PATH,
             nums_data=num_train,
             m_scaler_name=m_scaler_name,
-            kappa_scaler_name=kappa_scaler_name
+            kappa_scaler_name=kappa_scaler_name,
+            train=True
         )
         train_loader = DataLoader(
             train_dataset, 
@@ -91,12 +92,15 @@ def main(cfg: DictConfig) -> None:
         )
 
         val_dataset = PorousDataset(
-            X_dir=VAL_DIR, 
-            m_path=VAL_M_PATH, 
-            kappa_path=VAL_KAPPA_PATH, 
-            nums_data=num_val, 
-            m_scaler_name=m_scaler_name, 
-            kappa_scaler_name=kappa_scaler_name
+            X_dir=VAL_DIR,
+            m_path=VAL_M_PATH,
+            kappa_path=VAL_KAPPA_PATH,
+            nums_data=num_val,
+            m_scaler_name=m_scaler_name,
+            kappa_scaler_name=kappa_scaler_name,
+            train=False,
+            m_scaler=train_dataset.m_scaler,
+            kappa_scaler=train_dataset.kappa_scaler
         )
         val_loader = DataLoader(
             val_dataset, 
@@ -107,12 +111,15 @@ def main(cfg: DictConfig) -> None:
         )
 
         test_dataset = PorousDataset(
-            X_dir=TEST_DIR, 
-            m_path=TEST_M_PATH, 
-            kappa_path=TEST_KAPPA_PATH, 
-            nums_data=num_test, 
-            m_scaler_name=m_scaler_name, 
-            kappa_scaler_name=kappa_scaler_name
+            X_dir=TEST_DIR,
+            m_path=TEST_M_PATH,
+            kappa_path=TEST_KAPPA_PATH,
+            nums_data=num_test,
+            m_scaler_name=m_scaler_name,
+            kappa_scaler_name=kappa_scaler_name,
+            train=False,
+            m_scaler=train_dataset.m_scaler,
+            kappa_scaler=train_dataset.kappa_scaler
         )
         test_loader = DataLoader(
             test_dataset, 

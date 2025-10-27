@@ -4,8 +4,10 @@ import re
 import torch
 from torch.utils.data import Dataset
 from dataclasses import dataclass
+from typing import Any, Optional
 
 from .normalizer import apply_scaler
+
 
 @dataclass
 class PorousDataset(Dataset):
@@ -15,7 +17,9 @@ class PorousDataset(Dataset):
     nums_data: int
     m_scaler_name: str
     kappa_scaler_name: str
-
+    train: bool = True
+    m_scaler: Optional[Any] = None
+    kappa_scaler: Optional[Any] = None
 
     def __post_init__(self):
         files = glob.glob(os.path.join(self.X_dir, "*.pt"))
@@ -24,8 +28,14 @@ class PorousDataset(Dataset):
         self.m = torch.load(self.m_path)[:self.nums_data]
         self.kappa = torch.load(self.kappa_path)[:self.nums_data]
 
-        self.m_scaled =apply_scaler(self.m_scaler_name, self.m)
-        self.kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa)
+        if self.train:
+            self.m_scaled, self.m_scaler = apply_scaler(self.m_scaler_name, self.m, scaler=None)
+
+            self.kappa_scaled, self.kappa_scaler = apply_scaler(self.kappa_scaler_name, self.kappa, scaler=None)
+        
+        else:
+            self.m_scaled = apply_scaler(self.m_scaler_name, self.m, scaler=self.m_scaler)
+            self.kappa_scaled = apply_scaler(self.kappa_scaler_name, self.kappa, scaler=self.kappa_scaler)
 
 
     def __len__(self):
