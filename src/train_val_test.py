@@ -6,6 +6,7 @@ from torch import nn, optim
 import mlflow
 
 from .metrics import get_metrics
+from .normalizer import inverse_scaler
 
 @dataclass
 class TrainValTest:
@@ -17,6 +18,10 @@ class TrainValTest:
     optimizer: optim.Optimizer
     device: torch.device
     metrics_name: str
+    m_scaler_name: str
+    kappa_scaler_name: str
+    m_scaler: Optional[Any] = None
+    kappa_scaler: Optional[Any] = None
     num_epochs: int = 20
     scheduler: Optional[Any] = None
 
@@ -73,6 +78,11 @@ class TrainValTest:
         out_m_all = torch.cat(out_m_list, dim=0)
         y_k_all = torch.cat(y_k_list, dim=0)
         out_k_all = torch.cat(out_k_list, dim=0)
+
+        y_m_all = inverse_scaler(self.m_scaler_name, y_m_all, self.m_scaler)
+        out_m_all = inverse_scaler(self.m_scaler_name, out_m_all, self.m_scaler)
+        y_k_all = inverse_scaler(self.kappa_scaler_name, y_k_all, self.kappa_scaler)
+        out_k_all = inverse_scaler(self.kappa_scaler_name, out_k_all, self.kappa_scaler)
 
         avg_metric_m = get_metrics(metrics_name=self.metrics_name, y_true=y_m_all, y_pred=out_m_all)
         avg_metric_k = get_metrics(metrics_name=self.metrics_name, y_true=y_k_all, y_pred=out_k_all)

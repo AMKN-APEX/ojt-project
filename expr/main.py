@@ -145,8 +145,12 @@ def main(cfg: DictConfig) -> None:
             optimizer=optimizer,
             device=device,
             metrics_name=metrics_name,
+            m_scaler_name=m_scaler_name,
+            kappa_scaler_name=kappa_scaler_name,
+            m_scaler=train_dataset.m_scaler,
+            kappa_scaler=train_dataset.kappa_scaler,
             num_epochs=num_epochs,
-            scheduler=scheduler,
+            scheduler=scheduler
         )
         runner.train_val()
         runner.test()

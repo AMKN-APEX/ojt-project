@@ -38,3 +38,20 @@ def apply_scaler(scaler_name: str, x: torch.Tensor, scaler=None):
         raise ValueError(f"Unsupported scaler name: {scaler_name}")
 
     return torch.from_numpy(x_scaled.astype(np.float32)), scaler
+
+def inverse_scaler(scaler_name: str, x_scaled: torch.Tensor, scaler=None):
+    scaler_name = scaler_name.lower()
+    x_np = x_scaled.detach().cpu().numpy().reshape(-1, 1)
+
+    if scaler_name == "zscore" and scaler is not None:
+        x_inv = scaler.inverse_transform(x_np)
+    elif scaler_name == "minmax" and scaler is not None:
+        x_inv = scaler.inverse_transform(x_np)
+    elif scaler_name == "log":
+        x_inv = np.exp(x_np)
+    elif scaler_name == "log_zscore" and scaler is not None:
+        x_inv = np.exp(scaler.inverse_transform(x_np))
+    else:
+        raise ValueError(f"Unsupported or missing scaler for inverse: {scaler_name}")
+
+    return torch.from_numpy(x_inv.astype(np.float32))
