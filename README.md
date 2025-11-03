@@ -55,4 +55,4 @@ docker-compose restart gitlab-runner
 
 ### Dockerfile or docker-compose を編集した場合
 docker build -t ojt:v1.0 ./local_image_Dockerfile/
-docker compose build 
+docker compose build
