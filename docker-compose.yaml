@@ -34,7 +34,7 @@ services:
   tracking-server:
     container_name: mlflow-tracking
     build:
-      context: .
+      context: ./mlflow_Dockerfile
       dockerfile: Dockerfile
       args:
         - POSTGRES_USER=${POSTGRES_USER}
@@ -65,3 +65,13 @@ services:
       - FTP_USER_HOME=/home/ftpusers
       - ADDED_FLAGS="--tls=2"
     restart: always
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./gitlab-runner/config:/etc/gitlab-runner
+    environment:
+      - TZ=Asia/Tokyo

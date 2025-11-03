@@ -49,3 +49,11 @@ Windows Homeの制約により、Hyper-Vの仮想スイッチマネージャー�
 そのため、UbuntuのIPアドレスが起動ごとに変化してしまう。
 その対策として、setup.shを導入。
 これはipアドレスを自動で取得した後、docker-compose up -dを行う。
+
+### Gitlab コマンド
+sudo nano ./gitlab-runner/config/config.toml
+docker-compose restart gitlab-runner
+
+### Dockerfile or docker-compose を編集した場合
+docker build -t ojt:v1.0 ./local_image_Dockerfile/
+docker compose build
