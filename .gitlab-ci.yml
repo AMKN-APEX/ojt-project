@@ -27,4 +27,9 @@ check_mount:
   script: 
     - cd /mnt/c/Users/onion/Documents/slice_data_x_y_z_1
     - ls
-    
+
+check_docker_compose:
+  stage: check
+  script:
+    - docker-compose up -d
+    - docker-compose ps
