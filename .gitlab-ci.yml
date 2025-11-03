@@ -30,6 +30,12 @@ check_mount:
 
 check_docker_compose:
   stage: check
+  image: docker/compose:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
   script:
     - docker-compose up -d
     - docker-compose ps
