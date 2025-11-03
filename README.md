@@ -22,12 +22,25 @@ uv pip list
 *.pyの実行
 uv run *.py
 
-### GithubからGitlab移行時の注意
-11月10日以降にGitlabのアカウントを消去し、アカウントを作りなおす必要あり
-ただし、Googleアカウントで入らないこと
-また、アクセストークンは1つしか作れないので慎重に
-GitHubからGitlabへの移行方法はQiitaに載ってる
-もしかしたら、メールアドレスを変えたばっかりだから作れなかった説は存在する
+### Gitlab runnerの登録方法
+gitlab runnerをdocker-composeで動かす場合
+まずdocker-composeで作成し、そこのgitlabのなかでrunnerの登録を行う。
+docker exec -it gitlab-runner gitlab-runner register
+
+Enter the GitLab instance URL: https://gitlab.com/
+Enter the registration token: <GitLabで取得したトークン>
+Enter a description for the runner: docker-runner
+Enter tags for the runner (comma-separated): 
+Enter executor: docker
+Enter default Docker image (eg. ruby:2.7): ojt-project:v1.0
+
+config.tomlはvolumeでpwd上で永続化されているので、docker-compose downしても保存されている。
+
+アクセストークンの取得方法は
+設定→CI/CD→Runner→プロジェクトのrunnerが無料版だが、企業版だと不明
+
+### Dockerの構成
+mlflowやgitlab runnerなどの構成がどうなっているのか不明な部分も多いため、まとめる必要がある。
 
 ### チームで開発をしている意識をもって
 Gitは一つの機能を追加するとき、ブランチを切る
