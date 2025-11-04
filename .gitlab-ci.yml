@@ -1,8 +1,8 @@
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "expr"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "test"
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "expr"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "test"'
 
 stages:
   - check
@@ -14,7 +14,7 @@ include:
   - local: tests/.gitlab-ci.yml
   - local: expr/.gitlab-ci.yml
 
-before_scripts:
+before_script:
   - pwd
 
 check_gpu:
@@ -27,15 +27,3 @@ check_mount:
   script: 
     - cd /mnt/c/Users/onion/Documents/slice_data_x_y_z_1
     - ls
-
-check_docker_compose:
-  stage: check
-  image: docker/compose:latest
-  variables:
-    DOCKER_HOST: unix:///var/run/docker.sock
-  script:
-    - docker info
-    - docker-compose up -d
-    - docker-compose ps
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock

@@ -1,9 +1,7 @@
-workflow:
+  pytest:
+  stage: test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "test"
-
-pytest:
-  stage: test
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE == "test"'
   script: 
     - pytest
