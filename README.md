@@ -12,40 +12,40 @@
 
 
 ### Pythonの仮想環境
-uvの仮想環境作成
+uvの仮想環境作成 <br>
 uv venv .venv
 
-uvのライブラリインポート
+uvのライブラリインポート <br>
 uv pip install -r requirements.txt
 
-.venvのライブラリのリスト
+.venvのライブラリのリスト <br>
 uv pip list
 
-*.pyの実行
+*.pyの実行 <br>
 uv run *.py
 
 
 ### Gitlab runnerの登録方法
-gitlab runnerをdocker-composeで動かす場合
-まずdocker-composeで作成し、そこのgitlabのなかでrunnerの登録を行う。
+gitlab runnerをdocker-composeで動かす場合 <br>
+まずdocker-composeで作成し、そこのgitlabのなかでrunnerの登録を行う。 <br>
 docker exec -it gitlab-runner gitlab-runner register
 
-Enter the GitLab instance URL: https://gitlab.com/
-Enter the registration token: <GitLabで取得したトークン>
-Enter a description for the runner: docker-runner
-Enter tags for the runner (comma-separated): 
-Enter executor: docker
-Enter default Docker image (eg. ruby:2.7): ojt-project:v1.0
+Enter the GitLab instance URL: https://gitlab.com/ <br>
+Enter the registration token: <GitLabで取得したトークン> <br>
+Enter a description for the runner: docker-runner <br>
+Enter tags for the runner (comma-separated):  <br>
+Enter executor: docker <br>
+Enter default Docker image (eg. ruby:2.7): ojt-project:v1.0 <br>
 
-config.tomlはvolumeでpwd上で永続化されているので、docker-compose downしても保存されている。
+config.tomlはvolumeでpwd上で永続化されているので、docker-compose downしても保存されている。 <br>
 
 アクセストークンの取得方法は
-設定→CI/CD→Runner→プロジェクトのrunnerが無料版だが、企業版だと不明
+設定→CI/CD→Runner→プロジェクトのrunnerが無料版だが、企業版だと不明 
 
 
 ### チームで開発をしている意識をもって
-Gitは一つの機能を追加するとき、ブランチを切る
-コードの保守がしやすいようなコード設計にする
+Gitは一つの機能を追加するとき、ブランチを切る <br>
+コードの保守がしやすいようなコード設計にする <br>
 コードの要件定義のやり方を覚えたほうが良い
 
 
@@ -61,5 +61,5 @@ Gitは一つの機能を追加するとき、ブランチを切る
 
 
 ### Dockerfile or docker-compose を編集した場合
-docker build -t ojt:v1.0 ./local_image_Dockerfile/
-docker compose build
+docker build -t ojt:v1.0 ./local_image_Dockerfile/ <br>
+docker-compose build
